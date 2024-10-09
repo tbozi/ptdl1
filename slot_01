@@ -1,0 +1,268 @@
+slot_01
+## **1. Hiểu Dữ Liệu (DATA UNDERSTANDING)**
+
+Phần này tập trung vào việc tải dữ liệu và hiểu cấu trúc, nội dung cơ bản của nó.
+
+    import pandas as pd
+
+- **Giải thích**: 
+  - Nhập thư viện `pandas`, một thư viện mạnh mẽ trong Python dành cho xử lý và phân tích dữ liệu. `pd` là bí danh phổ biến để gọi `pandas`.
+
+
+    df = pd.read_csv('dulieuxettuyendaihoc.csv', header=0, delimiter=',', encoding='utf-8')
+
+- **Giải thích**:
+  - Sử dụng hàm `read_csv` của pandas để đọc tệp CSV tên `'dulieuxettuyendaihoc.csv'` và tải nó vào một DataFrame gọi là `df`.
+  - `header=0`: Dòng đầu tiên (chỉ số 0) của tệp CSV được sử dụng làm tên cột.
+  - `delimiter=','`: Dùng dấu phẩy làm ký tự phân cách giữa các cột.
+  - `encoding='utf-8'`: Sử dụng mã hóa UTF-8 để đọc tệp, đảm bảo hỗ trợ các ký tự đặc biệt.
+
+    df
+- **Giải thích**:
+  - Hiển thị toàn bộ nội dung của DataFrame `df` trong môi trường tương tác như Jupyter Notebook.
+
+
+    df.head(10)
+
+- **Giải thích**:
+  - Hiển thị 10 dòng đầu tiên của DataFrame `df`. Thường dùng để kiểm tra nhanh cấu trúc và nội dung của dữ liệu.
+
+
+    df.tail(10)
+
+- **Giải thích**:
+  - Hiển thị 10 dòng cuối cùng của DataFrame `df`. Giúp kiểm tra dữ liệu ở phần cuối của tệp.
+
+
+    df.columns
+
+- **Giải thích**:
+  - Liệt kê tên tất cả các cột trong DataFrame `df`. Giúp bạn biết được các thuộc tính hiện có trong dữ liệu.
+
+
+    df.rename(columns={'NGAYTHI':'NT','DINHHUONGNGHENGHIEP':'NGHE'}, inplace=True)
+
+- **Giải thích**:
+  - Đổi tên các cột trong DataFrame:
+    - `NGAYTHI` được đổi thành `NT`.
+    - `DINHHUONGNGHENGHIEP` được đổi thành `NGHE`.
+  - `inplace=True` đảm bảo rằng thay đổi được áp dụng trực tiếp lên DataFrame `df` mà không cần gán lại.
+
+
+    df.columns
+
+- **Giải thích**:
+  - Kiểm tra lại tên các cột sau khi đã đổi tên để xác nhận các thay đổi.
+
+
+    df.dtypes
+
+- **Giải thích**:
+  - Hiển thị kiểu dữ liệu của từng cột trong DataFrame `df` (ví dụ: int64, float64, object).
+
+  
+    df.shape
+
+- **Giải thích**:
+  - Trả về kích thước của DataFrame dưới dạng một tuple `(số dòng, số cột)`. Giúp bạn biết được kích thước tổng quát của dữ liệu.
+
+  
+    df.index
+
+- **Giải thích**:
+  - Hiển thị thông tin về chỉ mục (index) của DataFrame `df`. Thường là các số từ 0 đến n-1 nếu không được tùy chỉnh.
+
+
+    df.info()
+
+- **Giải thích**:
+  - Cung cấp thông tin chi tiết về DataFrame, bao gồm:
+    - Số lượng dòng và cột.
+    - Tên cột và kiểu dữ liệu.
+    - Số giá trị không null trong mỗi cột.
+    - Dung lượng bộ nhớ sử dụng bởi DataFrame.
+
+
+
+## **2. Xử Lý Khung Dữ Liệu (DATA FRAME MANIPULATION)**
+
+Phần này liên quan đến việc truy cập, chọn lọc và sắp xếp dữ liệu trong DataFrame.
+
+
+      df['M1']
+
+- **Giải thích**:
+  - Truy cập và trả về Series chứa dữ liệu của cột `M1` trong DataFrame `df`.
+
+    df[['M1']]
+
+- **Giải thích**:
+  - Trả về một DataFrame chứa chỉ cột `M1`. Sự khác biệt so với `df['M1']` là kết quả là DataFrame thay vì Series.
+
+    newdf = df[['M1','M2','KV','KT']]
+- **Giải thích**:
+  - Tạo một DataFrame mới tên là `newdf` chỉ chứa các cột `M1`, `M2`, `KV`, và `KT` từ DataFrame `df`.
+
+    newdf
+
+- **Giải thích**:
+  - Hiển thị toàn bộ nội dung của DataFrame `newdf`.
+
+    df[2:97]
+
+- **Giải thích**:
+  - Lấy các dòng từ chỉ số 2 đến 96 (tổng cộng 95 dòng) từ DataFrame `df`. Đây là cách sử dụng slicing để chọn một phần dữ liệu dựa trên vị trí hàng.
+
+    df.loc[92]
+
+- **Giải thích**:
+  - Sử dụng `.loc` để truy cập dòng có chỉ số nhãn (label) là 92. Nếu index là mặc định từ 0, đây sẽ là dòng thứ 93.
+
+    df.loc[4:10]
+
+- **Giải thích**:
+  - Lấy các dòng từ chỉ số 4 đến 10 (bao gồm cả 10) từ DataFrame `df` sử dụng `.loc`.
+
+    df.loc[5:9,['M1','KT']]
+
+- **Giải thích**:
+  - Chọn các dòng từ chỉ số 5 đến 9 và chỉ các cột `M1` và `KT`. Kết quả là một DataFrame con chứa dữ liệu được lọc theo điều kiện này.
+
+    df.iloc[5]
+
+- **Giải thích**:
+  - Sử dụng `.iloc` để truy cập dòng tại vị trí 5 (dòng thứ 6) trong DataFrame `df`.
+
+    df.iloc[6:9]
+- **Giải thích**:
+  - Chọn các dòng từ vị trí 6 đến 8 (tổng cộng 3 dòng) trong DataFrame `df` sử dụng `.iloc`.
+
+    df.iloc[:5]
+  
+- **Giải thích**:
+  - Lấy 5 dòng đầu tiên (từ vị trí 0 đến 4) trong DataFrame `df` sử dụng `.iloc`.
+
+
+    df.iloc[95:]
+
+- **Giải thích**:
+  - Lấy tất cả các dòng từ vị trí 95 đến cuối DataFrame `df` sử dụng `.iloc`.
+
+    df.iloc[2:5,1:3]
+
+- **Giải thích**:
+  - Chọn các dòng từ vị trí 2 đến 4 và các cột từ vị trí 1 đến 2 (chỉ cột thứ 2 và 3) trong DataFrame `df` sử dụng `.iloc`.
+
+    df.loc[5:20,['M1','M2','M3']]
+  
+- **Giải thích**:
+  - Chọn các dòng từ chỉ số 5 đến 20 và các cột `M1`, `M2`, `M3` trong DataFrame `df` sử dụng `.loc`.
+
+    df.iloc[5:21,1:7]
+
+- **Giải thích**:
+  - Chọn các dòng từ vị trí 5 đến 20 và các cột từ vị trí 1 đến 6 trong DataFrame `df` sử dụng `.iloc`.
+
+    df.sort_values(by='M1', ascending=True)
+
+- **Giải thích**:
+  - Sắp xếp DataFrame `df` theo cột `M1` theo thứ tự tăng dần (`ascending=True`).
+
+    df.sort_values(by=['M1','M2'], ascending=[True,False])
+
+- **Giải thích**:
+  - Sắp xếp DataFrame `df` theo hai cột:
+    - Đầu tiên là cột `M1` theo thứ tự tăng dần.
+    - Sau đó là cột `M2` theo thứ tự giảm dần (`False`).
+
+    df[df['M1'] >= 5]
+
+- **Giải thích**:
+  - Lọc và trả về các dòng trong DataFrame `df` mà giá trị ở cột `M1` lớn hơn hoặc bằng 5.
+
+    df[(df['M1'] > 6) & (df['M2'] > 5)]
+
+- **Giải thích**:
+  - Lọc và trả về các dòng trong DataFrame `df` mà giá trị ở cột `M1` lớn hơn 6 **và** giá trị ở cột `M2` lớn hơn 5.
+  - Dấu `&` được sử dụng để kết hợp hai điều kiện.
+
+    df.loc[df['KT'] == 'C']
+
+- **Giải thích**:
+  - Lọc và trả về các dòng trong DataFrame `df` mà giá trị ở cột `KT` bằng `'C'` sử dụng `.loc`.
+
+---
+
+## **3. Tóm Tắt Dữ Liệu (DATA SUMMARY)**
+
+Phần này tập trung vào việc tổng hợp và phân tích dữ liệu bằng các hàm thống kê và nhóm dữ liệu.
+
+    df.aggregate({'M1':['min','max'],'M2':['mean','sum']})
+
+- **Giải thích**:
+  - Sử dụng hàm `aggregate` để tính toán các thống kê tổng hợp cho các cột:
+    - Cột `M1`: giá trị nhỏ nhất (`min`) và lớn nhất (`max`).
+    - Cột `M2`: trung bình (`mean`) và tổng (`sum`).
+
+    df.groupby(['KV'])['KV'].agg(['count'])
+
+- **Giải thích**:
+  - Nhóm dữ liệu theo cột `KV` và đếm số lượng mục trong mỗi nhóm.
+  - Kết quả là một DataFrame với các giá trị đếm cho mỗi giá trị của `KV`.
+
+    df.groupby(['KV'])['M1'].agg(['count','min','mean','std','max','sum'])
+  
+- **Giải thích**:
+  - Nhóm dữ liệu theo cột `KV` và tính các thống kê cho cột `M1` trong mỗi nhóm:
+    - `count`: Số lượng mục.
+    - `min`: Giá trị nhỏ nhất.
+    - `mean`: Trung bình.
+    - `std`: Độ lệch chuẩn.
+    - `max`: Giá trị lớn nhất.
+    - `sum`: Tổng giá trị.
+
+df.groupby(['KV'])[['M1','M2']].agg(['min','mean'])
+
+- **Giải thích**:
+  - Nhóm dữ liệu theo cột `KV` và tính toán các thống kê cho cả hai cột `M1` và `M2` trong mỗi nhóm:
+    - `min`: Giá trị nhỏ nhất.
+    - `mean`: Trung bình.
+
+df.groupby(['KV','KT'])[['M1','M2']].agg(['min','max'])
+
+- **Giải thích**:
+  - Nhóm dữ liệu theo cả hai cột `KV` và `KT`, sau đó tính toán các thống kê cho cột `M1` và `M2` trong mỗi nhóm:
+    - `min`: Giá trị nhỏ nhất.
+    - `max`: Giá trị lớn nhất.
+
+    df_gr = df.groupby(['KV'], as_index=False).count()
+
+- **Giải thích**:
+  - Nhóm dữ liệu theo cột `KV` và đếm số lượng mục trong mỗi nhóm.
+  - `as_index=False`: Giữ `KV` là một cột bình thường thay vì làm chỉ mục.
+  - Kết quả được lưu vào DataFrame mới `df_gr`.
+
+
+    df_gr
+
+- **Giải thích**:
+  - Hiển thị nội dung của DataFrame `df_gr`, kết quả của phép nhóm và đếm trước đó.
+
+    pd.pivot_table(df, values=['M1','M2'], columns='KV', aggfunc=['min','mean','max'])
+
+- **Giải thích**:
+  - Tạo bảng xoay (pivot table) từ DataFrame `df`:
+    - `values=['M1','M2']`: Các cột cần tính toán.
+    - `columns='KV'`: Các giá trị của cột `KV` sẽ trở thành các cột trong bảng xoay.
+    - `aggfunc=['min','mean','max']`: Các hàm thống kê áp dụng cho các giá trị.
+  - Kết quả là bảng xoay hiển thị `min`, `mean`, `max` cho `M1` và `M2` theo từng giá trị của `KV`.
+
+
+    pd.pivot_table(newdf, values=['M1','M2'], columns=['KV','KT'], aggfunc=['min','mean','max'])
+
+- **Giải thích**:
+  - Tạo bảng xoay từ DataFrame `newdf`:
+    - `values=['M1','M2']`: Các cột cần tính toán.
+    - `columns=['KV','KT']`: Kết hợp hai cột `KV` và `KT` để tạo thành các cột trong bảng xoay.
+    - `aggfunc=['min','mean','max']`: Các hàm thống kê áp dụng cho các giá trị.
+  - Kết quả là bảng xoay hiển thị `min`, `mean`, `max` cho `M1` và `M2` theo từng tổ hợp của `KV` và `KT`.
