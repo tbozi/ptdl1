@@ -1,0 +1,352 @@
+slot_02
+## **1. Nhập Thư Viện**
+
+    import pandas as pd 
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+
+- **Giải thích**:
+  - **pandas** (`pd`): Thư viện mạnh mẽ dành cho xử lý và phân tích dữ liệu, đặc biệt là cấu trúc dữ liệu dạng bảng (DataFrame).
+  - **seaborn** (`sns`): Thư viện trực quan hóa dữ liệu dựa trên matplotlib, cung cấp các giao diện dễ sử dụng để tạo các biểu đồ thống kê hấp dẫn.
+  - **matplotlib.pyplot** (`plt`): Thư viện cơ bản để tạo các biểu đồ và hình ảnh trong Python.
+  - **numpy** (`np`): Thư viện hỗ trợ tính toán khoa học, đặc biệt cho các mảng đa chiều và các phép toán số học.
+
+## **2. Tải và Chọn Lọc Dữ Liệu**
+
+    df = pd.read_csv('dulieuxettuyendaihoc.csv',header=0, delimiter=',',encoding='utf-8')
+
+
+- **Giải thích**:
+  - **pd.read_csv**: Hàm đọc tệp CSV và tải dữ liệu vào một DataFrame.
+  - **'dulieuxettuyendaihoc.csv'**: Tên tệp CSV chứa dữ liệu tuyển sinh đại học.
+  - **header=0**: Dòng đầu tiên của tệp CSV (dòng 0) được sử dụng làm tên cột.
+  - **delimiter=','**: Dùng dấu phẩy làm ký tự phân cách giữa các cột.
+  - **encoding='utf-8'**: Sử dụng mã hóa UTF-8 để đọc tệp, đảm bảo hỗ trợ các ký tự đặc biệt.
+
+
+    df = df[['GT','DT','KV','KT','M1','M2','M3','NGAYTHI','DINHHUONGNGHENGHIEP']]
+
+
+- **Giải thích**:
+  - **df[['GT','DT','KV','KT','M1','M2','M3','NGAYTHI','DINHHUONGNGHENGHIEP']]**: Chọn lọc các cột cần thiết từ DataFrame ban đầu để tạo DataFrame mới `df`. Các cột được chọn là:
+    - **GT**: Giới tính.
+    - **DT**: Dân tộc.
+    - **KV**: Khu vực.
+    - **KT**: Khối thi.
+    - **M1, M2, M3**: Điểm các môn thi.
+    - **NGAYTHI**: Ngày thi.
+    - **DINHHUONGNGHENGHIEP**: Dinh hướng nghề nghiệp.
+
+
+## **3. Xử Lý Dữ Liệu (Data Manipulation)**
+
+### **3.1 Kiểm Tra Thông Tin DataFrame**
+
+    df.info()
+
+
+- **Giải thích**:
+  - Hiển thị thông tin tổng quan về DataFrame `df`, bao gồm số lượng dòng, cột, kiểu dữ liệu của từng cột, và số lượng giá trị không null trong mỗi cột.
+
+### **3.2 Đổi Tên Các Cột**
+
+    df.rename(columns={'NGAYTHI':'NT', 'DINHHUONGNGHENGHIEP':'NGHE'}, inplace=True)
+
+
+- **Giải thích**:
+  - **df.rename**: Đổi tên các cột trong DataFrame.
+  - **columns={'NGAYTHI':'NT', 'DINHHUONGNGHENGHIEP':'NGHE'}**: 
+    - Đổi tên cột `NGAYTHI` thành `NT`.
+    - Đổi tên cột `DINHHUONGNGHENGHIEP` thành `NGHE`.
+  - **inplace=True**: Thực hiện thay đổi trực tiếp trên DataFrame `df` mà không cần gán lại.
+
+    df.head(5)
+
+
+- **Giải thích**:
+  - Hiển thị 5 dòng đầu tiên của DataFrame `df` để kiểm tra nhanh cấu trúc và nội dung dữ liệu sau khi đã chọn lọc và đổi tên cột.
+
+### **3.3 Xử Lý Giá Trị Thiếu và Trùng Lặp**
+
+    df.dropna(how='all', inplace=True)
+
+
+- **Giải thích**:
+  - **df.dropna**: Loại bỏ các dòng có giá trị thiếu (NaN).
+  - **how='all'**: Chỉ loại bỏ các dòng mà tất cả các giá trị đều thiếu.
+  - **inplace=True**: Thực hiện thay đổi trực tiếp trên DataFrame `df`.
+
+    df.drop_duplicates(inplace=True)
+
+
+- **Giải thích**:
+  - **df.drop_duplicates**: Loại bỏ các dòng trùng lặp trong DataFrame.
+  - **inplace=True**: Thực hiện thay đổi trực tiếp trên DataFrame `df`.
+
+### **3.4 Trực Quan Hóa Dữ Liệu Thiếu**
+
+    plt.figure(figsize=(10,6))
+    sns.heatmap(df.isna().transpose(), cmap='YlGnBu',cbar_kws={'label':'Dữ liệu thiếu'})
+    plt.savefig('missingdata.png', dpi=100)
+    plt.show()
+
+
+- **Giải thích**:
+  - **plt.figure(figsize=(10,6))**: Tạo một hình ảnh mới với kích thước 10x6 inch.
+  - **df.isna()**: Tạo một DataFrame boolean, trong đó các giá trị là `True` nếu dữ liệu bị thiếu và `False` nếu không.
+  - **.transpose()**: Hoán vị DataFrame để các cột trở thành hàng, giúp dễ dàng trực quan hóa.
+  - **sns.heatmap(...)**: Tạo biểu đồ heatmap để hiển thị các giá trị thiếu.
+    - **cmap='YlGnBu'**: Sử dụng bảng màu "Yellow-Green-Blue".
+    - **cbar_kws={'label':'Dữ liệu thiếu'}**: Thêm nhãn cho thanh màu.
+  - **plt.savefig('missingdata.png', dpi=100)**: Lưu biểu đồ heatmap vào tệp `missingdata.png` với độ phân giải 100 DPI.
+  - **plt.show()**: Hiển thị biểu đồ heatmap.
+
+### **3.5 Điền Giá Trị Thiếu**
+
+    df['DT'].fillna('KINH', inplace=True)
+    df['M1'].fillna(df['M1'].mean(), inplace=True)
+    df['M2'].fillna(df['M2'].median(), inplace=True)
+    df['M3'].fillna(0, inplace=True)
+
+
+- **Giải thích**:
+  - **df['DT'].fillna('KINH', inplace=True)**:
+    - Điền giá trị thiếu trong cột `DT` (Dân tộc) bằng `'KINH'`.
+    - **inplace=True**: Thực hiện thay đổi trực tiếp trên DataFrame `df`.
+  - **df['M1'].fillna(df['M1'].mean(), inplace=True)**:
+    - Điền giá trị thiếu trong cột `M1` bằng giá trị trung bình của cột `M1`.
+  - **df['M2'].fillna(df['M2'].median(), inplace=True)**:
+    - Điền giá trị thiếu trong cột `M2` bằng giá trị trung vị (median) của cột `M2`.
+  - **df['M3'].fillna(0, inplace=True)**:
+    - Điền giá trị thiếu trong cột `M3` bằng `0`.
+
+### **3.6 Tạo Cột Trung Bình (TBM)**
+
+    df['TBM'] = (df['M1'] + df['M2'] + df['M3']) / 3
+
+- **Giải thích**:
+  - **df['TBM']**: Tạo một cột mới tên là `TBM` (Trung Bình Môn).
+  - **(df['M1'] + df['M2'] + df['M3']) / 3**: Tính trung bình cộng của các cột `M1`, `M2`, và `M3` cho mỗi dòng.
+
+### **3.7 Phân Loại Xếp Loại (XL)**
+
+    df.loc[df['TBM'] < 5.0, 'XL'] = 'FAIL'
+
+    df.loc[(df['TBM'] >= 5.0) & 
+       (df['TBM'] < 7.0), 'XL'] = 'FAIR'
+
+    df.loc[(df['TBM'] >= 7.0) & 
+       (df['TBM'] < 9.0), 'XL'] = 'GOOD'
+
+    df.loc[df['TBM'] >= 9.0, 'XL'] = 'EXCEL'
+
+
+- **Giải thích**:
+  - **df.loc[<condition>, 'XL'] = <value>**: Gán giá trị cho cột `XL` dựa trên điều kiện được chỉ định.
+  - **Điều kiện xếp loại**:
+    - **TBM < 5.0**: Gán `'FAIL'` (Rớt).
+    - **5.0 ≤ TBM < 7.0**: Gán `'FAIR'` (Trung Bình).
+    - **7.0 ≤ TBM < 9.0**: Gán `'GOOD'` (Tốt).
+    - **TBM ≥ 9.0**: Gán `'EXCEL'` (Xuất Sắc).
+
+### **3.8 Ánh Xạ Nhóm (NHOM)**
+
+    dict_map = {'A1':'G1', 'C':'G3', 'D1': 'G3', 'A': 'G1', 'B': 'G2'}
+    df['NHOM'] = df['KT'].map(dict_map)
+
+
+- **Giải thích**:
+  - **dict_map**: Tạo một từ điển ánh xạ các giá trị trong cột `KT` (Khối thi) thành các nhóm mới.
+    - `'A1'` → `'G1'`
+    - `'C'` → `'G3'`
+    - `'D1'` → `'G3'`
+    - `'A'` → `'G1'`
+    - `'B'` → `'G2'`
+  - **df['NHOM'] = df['KT'].map(dict_map)**:
+    - Áp dụng ánh xạ từ `dict_map` cho cột `KT` và lưu kết quả vào cột mới `NHOM`.
+
+### **3.9 Tạo Cột PLUS Sử Dụng Hàm Tùy Chỉnh**
+
+def fplus(x, y):
+    if (x == 'G1' or x == 'G2') and (y >= 4.0):
+        return 1.0
+    else:
+        return 0.0
+
+df['PLUS'] = list(map(fplus, df['NHOM'], df['TBM']))
+
+
+- **Giải thích**:
+  - **Định nghĩa hàm `fplus`**:
+    - Nhận hai tham số `x` và `y`.
+    - Nếu `x` là `'G1'` hoặc `'G2'` **và** `y` (TBM) lớn hơn hoặc bằng `4.0`, trả về `1.0`.
+    - Ngược lại, trả về `0.0`.
+  - **df['PLUS'] = list(map(fplus, df['NHOM'], df['TBM']))**:
+    - Sử dụng hàm `map` để áp dụng hàm `fplus` cho từng cặp giá trị tương ứng từ cột `NHOM` và `TBM`.
+    - Kết quả là một danh sách các giá trị `1.0` hoặc `0.0` được gán vào cột mới `PLUS`.
+
+
+## **4. Trực Quan Hóa Dữ Liệu (Data Visualization)**
+
+### **4.1 Biểu Đồ Đếm (Countplot) - Giới Tính (GT)**
+
+    sns.countplot(x='GT', data=df)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.countplot(x='GT', data=df)**: Tạo biểu đồ đếm (count plot) cho cột `GT` (Giới tính), hiển thị số lượng mỗi loại giới tính trong dữ liệu.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.2 Biểu Đồ Đếm (Countplot) - Khối Thi (KT) và Giới Tính (GT)**
+
+    sns.countplot(x='KT', hue='GT', data=df)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.countplot(x='KT', hue='GT', data=df)**: Tạo biểu đồ đếm cho cột `KT` (Khối thi), phân chia theo cột `GT` (Giới tính). Mỗi khối thi sẽ được chia thành các phần màu khác nhau tương ứng với giới tính.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.3 Biểu Đồ Cột (Barplot) - Giới Tính (GT) và Điểm M1**
+
+    sns.barplot(x='GT', y='M1', data=df, errorbar=None)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.barplot(x='GT', y='M1', data=df, errorbar=None)**: Tạo biểu đồ cột hiển thị trung bình điểm `M1` cho mỗi giới tính `GT`. Tham số `errorbar=None` loại bỏ thanh sai số.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.4 Biểu Đồ Cột (Barplot) - Giới Tính (GT), Điểm M1 và Khối Thi (KT)**
+
+    sns.barplot(x='GT', y='M1', hue='KT', data=df, errorbar=None)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.barplot(x='GT', y='M1', hue='KT', data=df, errorbar=None)**: Tạo biểu đồ cột hiển thị trung bình điểm `M1` cho mỗi giới tính `GT`, phân chia theo khối thi `KT`. Mỗi cột `GT` sẽ có các phần màu tương ứng với các khối thi khác nhau.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.5 Biểu Đồ Cột (Barplot) - Giới Tính (GT), Điểm M1 và Khối Thi (KT) với Estimator là max**
+
+    sns.barplot(x='GT', y='M1', hue='KT', data=df, errorbar=None, estimator=max)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.barplot(..., estimator=max)**: Tạo biểu đồ cột hiển thị giá trị lớn nhất (`max`) của điểm `M1` cho mỗi giới tính `GT`, phân chia theo khối thi `KT`. Tham số `estimator=max` thay vì mặc định là `mean`.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.6 Biểu Đồ Cột (Barplot) - Khu Vực (KV), Điểm M1 và Khối Thi (KT) với Estimator là max**
+
+    sns.barplot(x='KV', y='M1', hue='KT', data=df, errorbar=None, estimator=np.max)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.barplot(x='KV', y='M1', hue='KT', data=df, errorbar=None, estimator=np.max)**:
+    - Tạo biểu đồ cột hiển thị giá trị lớn nhất (`np.max`) của điểm `M1` cho mỗi khu vực `KV`, phân chia theo khối thi `KT`.
+    - Sử dụng hàm `np.max` từ thư viện `numpy` để tính giá trị lớn nhất.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.7 Biểu Đồ Tròn (Pie Chart) - Số Lượng Khối Thi (KT)**
+
+
+    gb = df.groupby(['KT'])['KT'].agg(['count'])
+
+    labels = gb.index # labels = ['A','A1','B','C','D1']
+    data = list(gb['count']) # data= [49,6,9,14,22]
+
+    colors = sns.color_palette('pastel') # Tạo bảng màu
+
+    plt.pie(data, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True)
+
+    plt.show()
+
+
+- **Giải thích**:
+  - **gb = df.groupby(['KT'])['KT'].agg(['count'])**:
+    - Nhóm dữ liệu theo cột `KT` (Khối thi) và đếm số lượng mỗi khối thi.
+    - Kết quả lưu vào DataFrame `gb` với các cột `KT` và `count`.
+  - **labels = gb.index**:
+    - Lấy các nhãn từ chỉ mục của DataFrame `gb`, ví dụ: `['A','A1','B','C','D1']`.
+  - **data = list(gb['count'])**:
+    - Lấy danh sách số lượng tương ứng cho mỗi nhãn, ví dụ: `[49,6,9,14,22]`.
+  - **colors = sns.color_palette('pastel')**:
+    - Tạo bảng màu pastel từ seaborn để sử dụng trong biểu đồ tròn.
+  - **plt.pie(...)**:
+    - Tạo biểu đồ tròn với dữ liệu `data`, nhãn `labels`, bảng màu `colors`.
+    - **autopct='%1.1f%%'**: Hiển thị tỷ lệ phần trăm với một chữ số thập phân.
+    - **shadow=True**: Thêm bóng đổ cho biểu đồ tròn.
+  - **plt.show()**: Hiển thị biểu đồ tròn.
+
+### **4.8 Biểu Đồ Tròn (Pie Chart) - Tổng Cột PLUS theo Khu Vực (KV)**
+
+    gb = df.groupby(['KV'])['PLUS'].agg(['sum'])
+
+    labels = gb.index
+    data = list(gb['sum'])
+
+    colors = sns.color_palette('pastel') # Tạo bảng màu
+
+    plt.pie(data, labels=labels, colors=colors, 
+        autopct='%1.1f%%', shadow=True)
+
+    plt.show()
+
+
+- **Giải thích**:
+  - **gb = df.groupby(['KV'])['PLUS'].agg(['sum'])**:
+    - Nhóm dữ liệu theo cột `KV` (Khu vực) và tính tổng của cột `PLUS` cho mỗi khu vực.
+    - Kết quả lưu vào DataFrame `gb` với các cột `KV` và `sum`.
+  - **labels = gb.index**:
+    - Lấy các nhãn từ chỉ mục của DataFrame `gb`, tương ứng với các khu vực.
+  - **data = list(gb['sum'])**:
+    - Lấy danh sách tổng giá trị `PLUS` tương ứng cho mỗi khu vực.
+  - **colors = sns.color_palette('pastel')**:
+    - Tạo bảng màu pastel từ seaborn để sử dụng trong biểu đồ tròn.
+  - **plt.pie(...)**:
+    - Tạo biểu đồ tròn với dữ liệu `data`, nhãn `labels`, bảng màu `colors`.
+    - **autopct='%1.1f%%'**: Hiển thị tỷ lệ phần trăm với một chữ số thập phân.
+    - **shadow=True**: Thêm bóng đổ cho biểu đồ tròn.
+  - **plt.show()**: Hiển thị biểu đồ tròn.
+
+### **4.9 Biểu Đồ Đường (Lineplot) - Ngày Thi (NT) và Điểm M1**
+
+    sns.lineplot(x='NT', y='M1', data=df)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.lineplot(x='NT', y='M1', data=df)**:
+    - Tạo biểu đồ đường hiển thị mối quan hệ giữa ngày thi `NT` và điểm `M1`.
+    - Mỗi điểm trên đường biểu đồ đại diện cho một giá trị `M1` vào một ngày thi cụ thể.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.10 Biểu Đồ Đường (Lineplot) - Ngày Thi (NT) và Điểm M1 với Estimator là max**
+
+    sns.lineplot(x='NT', y='M1', data=df, estimator=np.max)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.lineplot(x='NT', y='M1', data=df, estimator=np.max)**:
+    - Tạo biểu đồ đường hiển thị giá trị lớn nhất (`np.max`) của điểm `M1` cho mỗi ngày thi `NT`.
+    - Tham số `estimator=np.max` thay vì mặc định là `mean`.
+  - **plt.show()**: Hiển thị biểu đồ.
+
+### **4.11 Biểu Đồ Đường (Lineplot) - Ngày Thi (NT), Điểm M1 và Giới Tính (GT) với Estimator là max**
+
+
+    sns.lineplot(x='NT', y='M1', hue='GT', data=df, estimator=np.max)
+    plt.show()
+
+
+- **Giải thích**:
+  - **sns.lineplot(x='NT', y='M1', hue='GT', data=df, estimator=np.max)**:
+    - Tạo biểu đồ đường hiển thị giá trị lớn nhất (`np.max`) của điểm `M1` cho mỗi ngày thi `NT`, phân chia theo giới tính `GT`.
+    - Mỗi dòng trong biểu đồ đại diện cho một giới tính khác nhau.
+  - **plt.show()**: Hiển thị biểu đồ.
