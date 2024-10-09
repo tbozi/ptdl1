@@ -1,0 +1,185 @@
+# Thống kể dữ liệu (Mô tả dữ liệu)
+
+print(f'{df["M1"].min()}\n{df["M1"].max()}\n')
+print(f'{df["M1"].mean()}\n{df["M1"].median()}\n')
+print(f'{df["KT"].mode()}\n') i
+print(f'{df["M1"].quantile(0.25)}\n') // tính phân vị của cột đó(q1,q2,q3)
+
+df['M1'].max() - df['M1'].min()
+
+df['M1'].quantile(0.75) - df['M1'].quantile(0.25) // IQR
+
+np.mean(np.abs(df['M1'] - np.mean(df['M1']))) // độ lệch chuẩn của M1
+
+df[['M1','M2']].max() - df[['M1','M2']].min() // khoảng của M1 và M2
+
+df['M1'].var() // phương sai 
+
+df['M1'].std()
+
+// cũng là so sánh sự biến động nhưng chỉ dùng cái này chỉ khi độ lệch giữa 2 dữ liệu ko nhiều
+print(df[['M1','M2']].mean())
+
+print(df[['M1','M2']].std())
+
+df[['M1','M2']].std()/df[['M1','M2']].mean() // so sánh sự biến động tính bằng CV
+
+cv = df[['M1','M2','M3']].std() / df[['M1','M2','M3']].mean()  // so sánh mức độ phân tán của cả 3M
+list(cv)
+
+
+// mô tả biến định lương theo từng chỉ số đo lường
+df.groupby('GT')['M1'].describe()
+ 
+df['M1'].describe()
+
+df[['M1','M2','M3']].describe()
+
+
+// tính mức độ phân tán của điểm M2 của từng loại GT
+df.groupby('GT')['M2'].std()/df.groupby('GT')['M2'].mean()
+
+
+
+// Biểu đồ historan
+df['M1'].hist()
+plt.show()
+
+df['M1'].hist(bins=14)
+plt.show()
+
+
+// cũng là biểu đồ historan nhưng có phân phối chuẩn
+sns.displot(df, x='M1', kind='kde')
+plt.show()
+
+sns.displot(data = df[['M1','M2','M3']], kind='kde')
+plt.show()
+
+sns.displot(df, x='M1', hue='GT', kind='kde')
+plt.show()
+
+
+
+Skewness = độ xiên, độ lớn (trị tuyệt đối) cho biết mức độ dữ 1 lệch nhiều hay ít so với đường cong phân phối chuẩn.
+Cho biết xác xuất được phân bổ lệch về phía nào nhiều
+Trị tuyệt đối giá trị càng lớn thì dữ liệu phân phối nghiêng càng nhiều (lệch)
+Diễn giải cho skewness
+Skewness > 0 tức là mean > median : ta gọi là Positive Skewness hay lệch phải, tức là giá trị ngoại biên outliers nhận giá trị sẽ đẩy giá trị trung bình về cuối
+Skewness < 0 tức là mean < median: ta gọi là Negative Skweness hay lệch trái, tức là giá trị outlier nhận giá trị nhỏ sẽ đẩy giá trị trung bình về phía đầu
+Skewness = 0 thì mean = median = mode: Phân phối không lệch còn được gọi là phân phối đối xứng
+
+df['M1'].skew()
+
+df[['M1','M2','M3']].skew()
+
+
+
+Kurtosis (Pearson Kurtosis): Độ nhọn, trị tuyệt đối cho biết mỉ
+Giá trị của kutorsis:
+Càng gần 3 thì fit
+Dưới 3 thì fat
+Trên 3 thì thin
+Thông thường để đánh giá hình dáng độ nhọn ta dùng đại lượng
+excess kutorsis (còn gọi là Fisher Kurtosis) = Kurtosis - 3 
++ Nếu excess > 0 -> thin
++ Nếu excess = 0 -> fit 
++ Nếu excess < 0 -> fat
++ Trị tuyệt đối excess kutoris càng cao thì mức độ thin, fat cà
+Lưu ý:
++ Trong pandas sử dụng Fisher's kutorsis
++ Với pp chuẩn thì excess kurtosis = 0, skewness = 0
+
+df[['M1']].kurtosis()
+
+df[['M1','M2','M3']].kurtosis()
+
+sns.displot(data = df[['M1','M2']], kind='kde')
+plt.show()
+
+
+Biểu đồ nay cung cấp các thông tin quan trọng như 
+1. Q1: Tứ phân vị 25%
+2. Q2: Tứ phân vị 50% (median) 
+3. Q3: Tứ phân vị 75%
+4. Độ lớn IQR = |Q3-Q1|
+5. Lower bound= Q1 -1.5*IQR
+6. Upper bound= Q3 + 1.5* IQR
+7. Các ngoại biên, bất thường (outlier) cần xử lý trong dữ liệu Outlier: Là điểm dữ liệu khác biệt quá nhiều so với đa số 
+Hướng dẫn 
+  +Tính khoảng nghi ngờ chứa outliers 
+  + Tính khoảng chắc chắn chứa outliers
+sns.boxplot(data=df['M2'], orient="h")
+plt.show()
+
+sns.boxplot(data=df['M1'], orient="h")
+plt.show()
+
+sns.boxplot(data=df[['M1','M2','M3']], orient='h')
+plt.show()
+
+sns.boxplot(x='M1', y='KT',data=df, orient='h')
+plt.show()
+
+sns.boxplot(x='M1', y='GT',data=df, orient='h')
+plt.show()
+
+sns.boxplot(x='KT', y='M1',hue='GT',data=df)
+plt.show()
+
+
+// kiểm định phân phối chuẩn , chấm xanh nằm hết trên đường màu đỏ thì phân phối chuẩn và ngược lại 
+from scipy import stats
+stats.probplot(df['M1'],plot=sns.mpl.pyplot)
+plt.show()
+
+
+
+Phân tích sự tương quan (tác động, ảnh hưởng) qua lại giữa 2 biến định lượng
+Phương pháp 1: Hiệp phương sai: co-variance
+Giá trị co-variance > 0 thì 2 biến có tương quan thuận (đồng biến)
+Giá trị co-variance < 0 thì 2 biến có tương quan nghịch (nghịch biến)
+Giá trị co-variance = 0 thì 2 biến không tương quan
+Độ lớn (trị tuyệt đối của giá trị) càng lớn thì mức độ quan hệ (tương quan) càng chặt chẽ
+Ma trận hiệp phương sai: co-variance matrix
+
+df[['M1','M2']].cov()
+
+
+
+
+Với phương pháp so sánh tương quan bằng co-variance
+thì ta không đo lường được
+cường độ tương quan giữa 2 biến định lượng.
+Pearson Correlation: Tương quan tuyến tính r nằm trong khoảng [-1,1]
+r = 0: không tương quan 
+r < 0: Tương quan nghịch
+r > 0: Tương quan thuận
+|r| càng gần 1 thì tương quan càng cao 
+|r| < 0.5: thì tương quan thấp
+[0.5,0.65]: khá 
+[9.65,0.75]: tốt 
+[0.75,0.9]: rất tốt
+|r|>0.9: hoàn hảo
+Ma trận tương quan: correlation matrix
+* Lưu ý: được sử dụng khảo sát tương quan tuyến tính nhằm phân tích mối quan hệ tuyến tính giữa 2 biến định lượng
+df[['M1','M2']].corr()
+
+
+// so sánh độ tư quan, chấm xanh càng xa đường xanh thì tương quan thấp và ngược lại
+sns.lmplot(data=df, x='M1', y='M2', fit_reg=True)
+plt.show()
+
+df[['M1','M2','M3']].corr()
+
+sns.heatmap(df[['M1','M2','M3']].corr(), vmax=1.0, square=False).xaxis.tick_top()
+
+sns.lmplot(data=df, x='M1', y='M2',hue='GT', fit_reg=True)
+plt.show()
+
+// biểu đồ khám phá tổng hợp nhiều biến định lượng
+sns.pairplot(df[['M1','M2','M3']],diag_kind='kde', kind='reg')
+plt.show()
+
+
+
